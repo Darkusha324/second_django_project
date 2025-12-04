@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Мій Онлайн Магазин</title>
+    <title>Онлайн Магазин б/у телефонів</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -83,36 +83,26 @@
         .btn:hover {
             background-color: #023e8a;
         }
-
-        /* Footer */
-        footer {
-            background-color: #222;
-            color: #fff;
-            text-align: center;
-            padding: 15px;
-            margin-top: 30px;
-        }
     </style>
 </head>
 <body>
-    <!-- Навігація -->
-    <nav>
-        <a href="index.html">Головна</a>
-        <a href="products.html">Каталог</a>
-        <a href="cart.html">Кошик</a>
-        <a href="checkout.html">Замовлення</a>
-    </nav>
+
 
     <!-- Контент -->
     <div class="container">
-        <h1>Ласкаво просимо до нашого магазину!</h1>
+        <h1>Магазин б/у телефонів</h1>
         <div class="products">
+            {% for product in products %}
+            <div class="product">
+                <img src="{{ product.photograph.url }}" alt="{{ product.name }}">
+                <h3>{{ product.name }}</h3>
+                <p>{{ product.description|truncatewords:15 }}</p>
+                <div class="price">{{ product.price }} грн</div>
+            </div>
+            {% endfor %}
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        <p>&copy; 2025 Мій Онлайн Магазин</p>
-    </footer>
+
 </body>
 </html>
