@@ -7,4 +7,5 @@ app_name = "store"
 #400rostik400
 urlpatterns = [
     path('home/', views.home,name = 'home'),
+    path('add_product/',views.add_product,name = 'add_product')
 ]

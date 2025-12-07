@@ -15,6 +15,7 @@
         nav {
             background-color: #222;
             padding: 10px;
+            text-align: center;
         }
         nav a {
             color: #fff;
@@ -87,10 +88,16 @@
 </head>
 <body>
 
+    <!-- Навігація -->
+    <nav>
+        <a href="{% url 'store:home' %}">Головна</a>
+        <a href="{% url 'store:add_product' %}" class="btn">Додати продукт</a>
+    </nav>
 
     <!-- Контент -->
     <div class="container">
         <h1>Магазин б/у телефонів</h1>
+
         <div class="products">
             {% for product in products %}
             <div class="product">
@@ -102,7 +109,6 @@
             {% endfor %}
         </div>
     </div>
-
 
 </body>
 </html>

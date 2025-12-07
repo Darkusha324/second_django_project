@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Додати продукт</title>
+</head>
+<body>
+    <h1>Додати продукт</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ product.as_p }}
+
+        <!-- Кнопка збереження і повернення на головну -->
+        <button type="submit">Зберегти</button>
+    </form>
+
+    <!-- Додаткове посилання просто на головну -->
+    <p><a href="{% url 'store:home' %}">Повернутись на головну</a></p>
+</body>
+</html>
