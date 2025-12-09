@@ -92,6 +92,13 @@
     <nav>
         <a href="{% url 'store:home' %}">Головна</a>
         <a href="{% url 'store:add_product' %}" class="btn">Додати продукт</a>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'store:logout_user' %}" class="btn">Вийти</a>
+        {% else %}
+            <a href="{% url 'store:login_user' %}" class="btn">Увійти</a>
+            <a href="{% url 'store:register_user' %}" class="btn">Зареєструватися</a>
+        {% endif %}
     </nav>
 
     <!-- Контент -->

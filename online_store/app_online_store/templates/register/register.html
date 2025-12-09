@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Реєстрація</title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+    <div class="register-container">
+        <h2>Реєстрація</h2>
+
+        <!-- Форма з класу UserCreationForm -->
+        <form method="post">
+            {% csrf_token %}
+            {{ form_user.as_p }}  <!-- автоматично рендерить усі поля з помилками -->
+
+            <button type="submit">Зареєструватися</button>
+        </form>
+
+        <p>Вже маєте акаунт? <a href="{% url 'store:login_user' %}">Увійти</a></p>
+    </div>
+</body>
+</html>

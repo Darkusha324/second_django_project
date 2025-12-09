@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Вхід</title>
+    <link rel="stylesheet" href="">
+</head>
+<body>
+    <div class="login-container">
+        <h2>Вхід до системи</h2>
+
+        <!-- Виведення повідомлень про помилки -->
+        {% if error %}
+            <div class="error-message">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <!-- Форма логіну -->
+        <form method="post">
+            {% csrf_token %}
+
+            <label for="username">Ім'я користувача:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Пароль:</label>
+            <input type="password" id="password" name="password" required>
+
+            <button type="submit">Увійти</button>
+        </form>
+
+        <p>Ще не маєте акаунта? <a href="{% url 'store:register_user' %}">Зареєструватися</a></p>
+    </div>
+</body>
+</html>
