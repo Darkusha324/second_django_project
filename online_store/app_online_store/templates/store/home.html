@@ -84,14 +84,18 @@
         .btn:hover {
             background-color: #023e8a;
         }
+
+        /* Щоб посилання не ламало стиль */
+        .product-link {
+            text-decoration: none;
+            color: inherit;
+        }
     </style>
 </head>
 <body>
 
-    <!-- Навігація -->
     <nav>
         <a href="{% url 'store:home' %}">Головна</a>
-        <a href="{% url 'store:add_product' %}" class="btn">Додати продукт</a>
 
         {% if user.is_authenticated %}
             <a href="{% url 'store:logout_user' %}" class="btn">Вийти</a>
@@ -101,18 +105,19 @@
         {% endif %}
     </nav>
 
-    <!-- Контент -->
     <div class="container">
         <h1>Магазин б/у телефонів</h1>
 
         <div class="products">
             {% for product in products %}
-            <div class="product">
-                <img src="{{ product.photograph.url }}" alt="{{ product.name }}">
-                <h3>{{ product.name }}</h3>
-                <p>{{ product.description|truncatewords:15 }}</p>
-                <div class="price">{{ product.price }} грн</div>
-            </div>
+            <a href="{% url 'store:product_detail' product.slug %}" class="product-link">
+                <div class="product">
+                    <img src="{{ product.photograph.url }}" alt="{{ product.name }}">
+                    <h3>{{ product.name }}</h3>
+                    <p>{{ product.description|truncatewords:15 }}</p>
+                    <div class="price">{{ product.price }} грн</div>
+                </div>
+            </a>
             {% endfor %}
         </div>
     </div>

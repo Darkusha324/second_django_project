@@ -49,3 +49,8 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect("store:home")
+
+
+def product_detail (request, slug ):
+    product = models.Product.objects.get(slug=slug)
+    return render(request,'product_detail/product_detail.html',{"product":product})
