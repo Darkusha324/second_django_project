@@ -2,22 +2,26 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from . import models
 from .form import FormProduct , RegisterUserForm
+from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
 
 def home(request):
     products = models.Product.objects.all()
     return render(request,"store/home.html",{"products": products})
 
-
+@login_required
 def add_product(request):
     if request.method == 'POST':
-        product = FormProduct(request.POST,request.FILES)
-        if product.is_valid():
+        form = FormProduct(request.POST,request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.user = request.user
             product.save()
-            redirect('store:home')
+            return redirect('store:profile',username = request.user.username)
     else:
-        product = FormProduct()
-    return render(request,'AddProduct/add_product.html',{"product":product})
+        form = FormProduct()
+    return render(request,'AddProduct/add_product.html',{"product":form})
 
 
 
@@ -54,3 +58,10 @@ def logout_user(request):
 def product_detail (request, slug ):
     product = models.Product.objects.get(slug=slug)
     return render(request,'product_detail/product_detail.html',{"product":product})
+
+
+@login_required
+def profile(request,username):
+    user = User.objects.get(username=username)
+    products = models.Product.objects.filter(user_id=request.user)
+    return render(request,'profile/profile.html',{'user':user,'products':products})

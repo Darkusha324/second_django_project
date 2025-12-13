@@ -98,7 +98,7 @@
         <a href="{% url 'store:home' %}">Головна</a>
 
         {% if user.is_authenticated %}
-            <a href="{% url 'store:logout_user' %}" class="btn">Вийти</a>
+            <a href="{% url 'store:profile'  user.username %}" class="btn">Профіль</a>
         {% else %}
             <a href="{% url 'store:login_user' %}" class="btn">Увійти</a>
             <a href="{% url 'store:register_user' %}" class="btn">Зареєструватися</a>
