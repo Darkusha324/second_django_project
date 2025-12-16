@@ -1,22 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.text import slugify
-
-def ua_to_en(text):
-    mapping = {
-        'а': 'a', 'б': 'b', 'в': 'v', 'г': 'h', 'ґ': 'g',
-        'д': 'd', 'е': 'e', 'є': 'ye', 'ж': 'zh', 'з': 'z',
-        'и': 'y', 'і': 'i', 'ї': 'yi', 'й': 'y', 'к': 'k',
-        'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p',
-        'р': 'r', 'с': 's', 'т': 't', 'у': 'u', 'ф': 'f',
-        'х': 'kh', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'shch',
-        'ю': 'yu', 'я': 'ya', 'ь': '', '’': '', "'": ''
-    }
-
-    result = ""
-    for char in text.lower():
-        result += mapping.get(char, char)
-    return result
+from .ua_to_en import ua_to_en
 
 
 class Product(models.Model):
@@ -45,3 +30,20 @@ class Product(models.Model):
             self.slug = slug
 
         super().save(*args, **kwargs)
+
+
+class Cart(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def total_price(self):
+        return sum(item.total() for item in self.items.all())
+
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, related_name="items", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def total(self):
+        return self.product.price * self.quantity
+

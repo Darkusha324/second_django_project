@@ -1,0 +1,15 @@
+{% for item in items %}
+    <div>
+        <strong>{{ item.product.name }}</strong>
+        <p>Ціна: {{ item.product.price }} грн</p>
+        <p>Кількість: {{ item.quantity }}</p>
+
+        <a href="{% url 'store:add_item' item.id %}">+</a>
+        <a href="{% url 'store:decrease_item' item.id %}">-</a>
+
+        <p>Разом: {{ item.total }} грн</p>
+    </div>
+    <hr>
+{% endfor %}
+
+<h3>Загальна сума: {{ total }} грн</h3>

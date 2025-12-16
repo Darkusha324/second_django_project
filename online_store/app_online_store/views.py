@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from . import models
 from .form import FormProduct , RegisterUserForm
 from django.contrib.auth.models import User
@@ -65,3 +65,45 @@ def profile(request,username):
     user = User.objects.get(username=username)
     products = models.Product.objects.filter(user_id=request.user)
     return render(request,'profile/profile.html',{'user':user,'products':products})
+
+def add_to_cart(request, product_slug):
+    product = get_object_or_404(models.Product, slug=product_slug)
+    cart = request.user.cart
+
+    item, created = models.CartItem.objects.get_or_create(cart=cart, product=product)
+
+    if not created:
+        item.quantity += 1
+
+    item.save()
+    return redirect('store:home')
+
+
+def add_item(request,item_id):
+    item = get_object_or_404(models.CartItem, id=item_id, cart=request.user.cart)
+
+    item.quantity +=1
+    item.save()
+    return redirect('store:cart')
+
+
+def decrease_item(request, item_id):
+    item = get_object_or_404(models.CartItem, id=item_id, cart=request.user.cart)
+
+    if item.quantity > 1:
+        item.quantity -= 1
+        item.save()
+    else:
+        item.delete()
+
+    return redirect('store:cart')
+
+def cart_view(request):
+    cart = request.user.cart
+    items = cart.items.all()
+    total = cart.total_price()
+
+    return render(request, 'cart/cart.html', {
+        'items': items,
+        'total': total
+    })

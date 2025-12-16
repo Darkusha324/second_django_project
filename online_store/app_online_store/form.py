@@ -11,13 +11,14 @@ class FormProduct (forms.ModelForm):
 
 class RegisterUserForm(UserCreationForm):
     username = forms.CharField(max_length=150,validators=[validate_english_username])
+    password1 = forms.CharField(widget=forms.PasswordInput,help_text='')
     password2 = forms.CharField(widget=forms.PasswordInput,help_text='')
+
     class Meta:
         model = User
-        fields = ['username','password1','password2']
-        help_texts = {
-            'username':'',
-            'password1':'',
-            'password2': ''
-        }
+        fields = ['username', 'password1', 'password2']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.help_text = ''

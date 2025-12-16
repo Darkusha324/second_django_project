@@ -97,7 +97,7 @@
             {% if product.created_at %}
             <p><strong>Додано:</strong> {{ product.created_at|date:"d.m.Y" }}</p>
             {% endif %}
-
+            <a href="{% url 'store:add_to_cart' product.slug %}" class="btn-back">додати товар в корзину</a>
             <a href="{% url 'store:home' %}" class="btn-back">Назад до каталогу</a>
         </div>
     </div>
