@@ -7,8 +7,9 @@ from django.contrib.auth.decorators import login_required
 
 
 def home(request):
+    categories = models.Category.objects.all()
     products = models.Product.objects.all()
-    return render(request,"store/home.html",{"products": products})
+    return render(request,"store/home.html",{"products": products,"categories":categories})
 
 @login_required
 def add_product(request):
@@ -84,7 +85,7 @@ def add_item(request,item_id):
 
     item.quantity +=1
     item.save()
-    return redirect('store:cart')
+    return redirect('store:cart',username=request.user.username)
 
 
 def decrease_item(request, item_id):
@@ -96,9 +97,9 @@ def decrease_item(request, item_id):
     else:
         item.delete()
 
-    return redirect('store:cart')
+    return redirect('store:cart', username=request.user.username)
 
-def cart_view(request):
+def cart_view(request,username):
     cart = request.user.cart
     items = cart.items.all()
     total = cart.total_price()
@@ -107,3 +108,17 @@ def cart_view(request):
         'items': items,
         'total': total
     })
+
+
+def product_category(request,slug):
+        category = get_object_or_404(models.Category, slug=slug)
+        products = category.products.all()
+        categories = models.Category.objects.all()
+
+        data = {
+            'products': products,
+            'categories': categories,
+            'selected_category': category
+        }
+
+        return render(request, 'store/home.html',data)

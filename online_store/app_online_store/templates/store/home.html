@@ -12,14 +12,13 @@
             color: #333;
         }
 
-        /* Навігація */
+
         nav {
             background-color: #222;
             padding: 10px 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: relative;
         }
         nav a {
             color: #fff;
@@ -28,10 +27,51 @@
             font-weight: bold;
         }
         nav a:hover {
-            text-decoration: underline;
+            text-decoration: none;
         }
 
-        /* Спливаюча корзина */
+
+        .category-dropdown {
+            position: relative;
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        .category-btn {
+            color: #fff;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .category-menu {
+            display: none;
+            position: absolute;
+            background: #fff;
+            min-width: 180px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            padding: 10px 0;
+            z-index: 200;
+        }
+
+        .category-dropdown:hover .category-menu {
+            display: block;
+        }
+
+        .category-menu a {
+            display: block;
+            padding: 8px 15px;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .category-menu a:hover {
+            text-decoration: none;
+            background: #f0f0f0;
+        }
+
+
         .cart-dropdown {
             position: relative;
             display: inline-block;
@@ -61,7 +101,19 @@
         }
 
         .cart-item {
-            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .cart-item-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+
+        .cart-item-info {
             font-size: 14px;
         }
 
@@ -84,7 +136,7 @@
             background: #023e8a;
         }
 
-        /* Контейнер */
+
         .container {
             width: 90%;
             max-width: 1200px;
@@ -96,7 +148,7 @@
             margin-bottom: 30px;
         }
 
-        /* Товари */
+
         .products {
             display: flex;
             flex-wrap: wrap;
@@ -150,31 +202,51 @@
         <div>
             <a href="{% url 'store:home' %}">Головна</a>
 
+            <div class="category-dropdown">
+                <span class="category-btn">Категорії ▼</span>
+                <div class="category-menu">
+                    {% for cat in categories %}
+                        <a href="{% url 'store:category' cat.slug %}" >{{ cat.name }}</a>
+                    {% empty %}
+                        <a>Немає категорій</a>
+                    {% endfor %}
+                </div>
+            </div>
+
             {% if user.is_authenticated %}
-                <a href="{% url 'store:profile' user.username %}">Профіль</a>
+                <a href="{% url 'store:profile' user.username %}" >Профіль</a>
             {% else %}
                 <a href="{% url 'store:login_user' %}">Увійти</a>
             {% endif %}
         </div>
 
-        <!-- ✅ Спливаюча корзина -->
+
         <div class="cart-dropdown">
-            <span class="cart-icon">🛒</span>
+            {% if user.is_authenticated %}
+                <a href="{% url 'store:cart' user.username %}" class="product-link">
+                    <span class="cart-icon">🛒</span>
+                </a>
+            {% else %}
+                <span class="cart-icon">🛒</span>
+            {% endif %}
 
             <div class="cart-content">
                 {% if user.is_authenticated %}
                     {% if user.cart.items.all %}
                         {% for item in user.cart.items.all %}
                             <div class="cart-item">
-                                <strong>{{ item.product.name }}</strong><br>
-                                {{ item.quantity }} шт — {{ item.total }} грн
+                                <img src="{{ item.product.photograph.url }}" alt="{{ item.product.name }}" class="cart-item-img">
+                                <div class="cart-item-info">
+                                    <strong>{{ item.product.name }}</strong><br>
+                                    {{ item.quantity }} шт — {{ item.total }} грн
+                                </div>
                             </div>
                         {% endfor %}
                         <hr>
                         <div class="cart-total">
                             Разом: {{ user.cart.total_price }} грн
                         </div>
-                        <a href="{% url 'store:cart' %}" class="cart-btn">Перейти в корзину</a>
+                        <a href="{% url 'store:cart' user.username %}" class="cart-btn">Перейти в корзину</a>
                     {% else %}
                         <p>Корзина порожня</p>
                     {% endif %}
@@ -186,7 +258,13 @@
     </nav>
 
     <div class="container">
-        <h1>Магазин б/у телефонів</h1>
+        <h1>
+            {% if selected_category %}
+                Категорія: {{ selected_category.name }}
+            {% else %}
+                Магазин б/у телефонів
+            {% endif %}
+        </h1>
 
         <div class="products">
             {% for product in products %}

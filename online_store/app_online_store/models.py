@@ -4,6 +4,14 @@ from django.utils.text import slugify
 from .ua_to_en import ua_to_en
 
 
+class Category (models.Model):
+    name = models.CharField(max_length=20,unique=True)
+    slug = models.SlugField(unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
     name = models.CharField(max_length=20)
     slug = models.SlugField(unique=True,blank=True)
@@ -12,6 +20,7 @@ class Product(models.Model):
     description = models.TextField(blank=True, null=True)
     creation_date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE,related_name='products')
 
 
     def __str__(self):
@@ -46,4 +55,8 @@ class CartItem(models.Model):
 
     def total(self):
         return self.product.price * self.quantity
+
+
+
+
 

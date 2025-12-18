@@ -1,15 +1,133 @@
-{% for item in items %}
-    <div>
-        <strong>{{ item.product.name }}</strong>
-        <p>Ціна: {{ item.product.price }} грн</p>
-        <p>Кількість: {{ item.quantity }}</p>
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Корзина</title>
 
-        <a href="{% url 'store:add_item' item.id %}">+</a>
-        <a href="{% url 'store:decrease_item' item.id %}">-</a>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+        margin: 0;
+        padding: 20px;
+    }
 
-        <p>Разом: {{ item.total }} грн</p>
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .cart-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .cart-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .cart-item img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+    }
+
+    .cart-info {
+        flex-grow: 1;
+    }
+
+    .cart-info strong {
+        font-size: 18px;
+    }
+
+    .cart-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .cart-actions a {
+         display: inline-block;
+         width: 32px;
+         height: 32px;
+         line-height: 32px;
+         text-align: center;
+         background: #0077b6;
+         color: #fff;
+         font-size: 25px;
+         border-radius: 5px;
+         text-decoration: none;
+         font-weight: bold;
+    }
+
+    .cart-actions a:hover {
+        background: #023e8a;
+    }
+
+    .total {
+        text-align: right;
+        font-size: 22px;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+
+    .back-btn {
+        display: inline-block;
+        margin-top: 20px;
+        text-decoration: none;
+        background: #555;
+        color: #fff;
+        padding: 10px 15px;
+        border-radius: 5px;
+    }
+
+    .back-btn:hover {
+        background: #333;
+    }
+</style>
+<body>
+
+    <h1>Ваша корзина</h1>
+
+    <div class="cart-container">
+
+        {% for item in items %}
+        <div class="cart-item">
+            <img src="{{ item.product.photograph.url }}" alt="{{ item.product.name }}">
+
+            <div class="cart-info">
+                <strong>{{ item.product.name }}</strong>
+                <p>Ціна: {{ item.product.price }} грн</p>
+                <p>Кількість: {{ item.quantity }}</p>
+                <p>Разом: {{ item.total }} грн</p>
+            </div>
+
+            <div class="cart-actions">
+                <a href="{% url 'store:add_item' item.id %}">+</a>
+                <a href="{% url 'store:decrease_item' item.id %}">-</a>
+            </div>
+        </div>
+        {% endfor %}
+
+        <div class="total">
+            Загальна сума: {{ total }} грн
+        </div>
+
+        <a href="{% url 'store:home' %}" class="back-btn">⬅ Повернутися до магазину</a>
+
     </div>
-    <hr>
-{% endfor %}
 
-<h3>Загальна сума: {{ total }} грн</h3>
+</body>
+</html>

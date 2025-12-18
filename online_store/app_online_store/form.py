@@ -7,7 +7,7 @@ from .validators import validate_english_username
 class FormProduct (forms.ModelForm):
     class Meta:
         model = Product
-        fields = ["name","price", "photograph" ,"description" ]
+        fields = ["name","price", "photograph" ,"description","category" ]
 
 class RegisterUserForm(UserCreationForm):
     username = forms.CharField(max_length=150,validators=[validate_english_username])
