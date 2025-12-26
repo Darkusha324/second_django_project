@@ -1,4 +1,4 @@
-from .models import Product
+from .models import Product, Order
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -22,3 +22,9 @@ class RegisterUserForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.help_text = ''
+
+
+class FormOrder (forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['first_name','last_name','phone_number','city' ,'postal_code','email' ]

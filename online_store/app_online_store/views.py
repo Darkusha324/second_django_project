@@ -1,9 +1,12 @@
 from django.contrib.auth import authenticate, login, logout
+from django.http import Http404
 from django.shortcuts import render, redirect, get_object_or_404
 from . import models
-from .form import FormProduct , RegisterUserForm
+from .form import FormProduct , RegisterUserForm , FormOrder
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+
+from .models import OrderCart, Cart, OrderCartItem
 
 
 def home(request):
@@ -120,5 +123,34 @@ def product_category(request,slug):
             'categories': categories,
             'selected_category': category
         }
-
         return render(request, 'store/home.html',data)
+
+@login_required
+def add_order (request):
+    cart_user = Cart.objects.get(user=request.user)
+    if not cart_user.items.exists():
+        raise Http404("Сторінку не знайдено")
+    if request.method == "POST":
+        form = FormOrder(request.POST)
+        cart = Cart.objects.get(user=request.user)
+        if form.is_valid():
+            order_cart = OrderCart.objects.create(user=request.user)
+
+            for item in cart.items.all():
+                OrderCartItem.objects.create( order_cart=order_cart,
+                                              product=item.product,
+                                              quantity=item.quantity,
+                                              price_at_purchase=item.product.price )
+
+            order = form.save(commit=False)
+            order.user = request.user
+            order.order_cart = order_cart
+            order.save()
+
+            cart.items.all().delete()
+
+            return redirect('store:profile',username=request.user.username)
+    else:
+        form = FormOrder()
+    return render(request,'Addorder/Addorder.html',{'form':form,"cart_user":cart_user})
+

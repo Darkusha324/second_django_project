@@ -43,7 +43,7 @@
             border-radius: 8px;
             border: 1px solid #ddd;
             width: 350px;
-            margin-left: 0; /* зсув вліво */
+            margin-left: 0;
         }
 
         .account-box p {
@@ -64,11 +64,11 @@
             background-color: #023e8a;
         }
 
-        .products {
+        .products, .cart-section {
             margin-top: 30px;
         }
 
-        .product {
+        .product, .cart-item {
             background: #fff;
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -79,17 +79,19 @@
             gap: 15px;
         }
 
-        .product img {
+        .product img, .cart-item-img {
             width: 80px;
             height: 80px;
             object-fit: cover;
             border-radius: 5px;
         }
+
         .product-link {
            text-decoration: none;
             color: inherit;
             display: block;
         }
+
         .product-info h3 {
             margin: 0;
         }
@@ -98,13 +100,29 @@
             margin: 5px 0;
             color: #666;
         }
+
+        .cart-total {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .cart-btn {
+            display: inline-block;
+            text-align: center;
+            padding: 8px 15px;
+            background: #0077b6;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .cart-btn:hover {
+            background: #023e8a;
+        }
     </style>
 </head>
 <body>
 
     <nav>
         <a href="{% url 'store:home' %}">Головна</a>
-
     </nav>
 
     <div class="container">
@@ -118,7 +136,6 @@
                     <p><strong>Повне ім'я:</strong> {{ user.first_name }} {{ user.last_name }}</p>
                 {% endif %}
 
-
                 <div>
                     <a href="{% url 'store:add_product' %}" class="btn">Додати товар</a>
                     <a href="{% url 'store:logout_user' %}" class="btn">Вийти</a>
@@ -127,22 +144,44 @@
 
             <div class="products">
                 <h2>Ваші товари</h2>
-
                 {% if products %}
                     {% for product in products %}
-                <a href="{% url 'store:product_detail' product.slug %}" class="product-link">
-                        <div class="product">
-                            <img src="{{ product.photograph.url }}" alt="{{ product.name }}">
-                            <div class="product-info">
-                                <h3>{{ product.name }}</h3>
-                                <p>{{ product.price }} грн</p>
-                                <p>{{ product.description|truncatewords:12 }}</p>
+                        <a href="{% url 'store:product_detail' product.slug %}" class="product-link">
+                            <div class="product">
+                                <img src="{{ product.photograph.url }}" alt="{{ product.name }}">
+                                <div class="product-info">
+                                    <h3>{{ product.name }}</h3>
+                                    <p>{{ product.price }} грн</p>
+                                    <p>{{ product.description|truncatewords:12 }}</p>
+                                </div>
                             </div>
-                        </div>
-                </a>
+                        </a>
                     {% endfor %}
                 {% else %}
                     <p>У вас ще немає доданих товарів.</p>
+                {% endif %}
+            </div>
+
+            <!-- Окрема секція для корзини -->
+            <div class="cart-section">
+                <h2>Ваша корзина</h2>
+                {% if user.cart.items.all %}
+                    {% for item in user.cart.items.all %}
+                        <div class="cart-item">
+                            <img src="{{ item.product.photograph.url }}" alt="{{ item.product.name }}" class="cart-item-img">
+                            <div class="cart-item-info">
+                                <strong>{{ item.product.name }}</strong><br>
+                                {{ item.quantity }} шт — {{ item.total }} грн
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <hr>
+                    <div class="cart-total">
+                        Разом: {{ user.cart.total_price }} грн
+                    </div>
+                    <a href="{% url 'store:cart' user.username %}" class="cart-btn">Перейти в корзину</a>
+                {% else %}
+                    <p>Корзина порожня</p>
                 {% endif %}
             </div>
 

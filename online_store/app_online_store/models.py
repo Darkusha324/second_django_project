@@ -1,7 +1,9 @@
 from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.text import slugify
 from .ua_to_en import ua_to_en
+
 
 
 class Category (models.Model):
@@ -58,5 +60,32 @@ class CartItem(models.Model):
 
 
 
+class OrderCart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def total_price(self):
+        return sum(item.total() for item in self.items.all())
+
+class OrderCartItem(models.Model):
+    order_cart = models.ForeignKey(OrderCart, related_name="items", on_delete=models.CASCADE)
+    product = models.ForeignKey("Product", on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
 
 
+
+class Order(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    phone_number = models.CharField(blank=False,null=False,unique=True,max_length=15,
+                              validators=[RegexValidator(r'^\+?\d{9,15}$')],default="номер не вказано")
+    city = models.CharField(max_length=50)
+    postal_code = models.CharField(max_length=20)
+    create_at = models.DateTimeField(auto_now_add=True)
+    email = models.EmailField()
+    order_cart = models.OneToOneField(OrderCart, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return f" Замовлення для  {self.first_name} {self.last_name} ({self.email}) номер телефону:{self.phone_number}"
