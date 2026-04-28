@@ -52,6 +52,14 @@
         button:hover {
             background: #023e8a;
         }
+        .back-button {
+            background: #6c757d;
+            color: white;
+        }
+
+        .back-button:hover {
+            background: #5a6268;
+        }
     </style>
 </head>
 <body>
@@ -62,6 +70,7 @@
             {% csrf_token %}
             {{ form.as_p }}
             <button type="submit">Підтвердити замовлення</button>
+            <button type="button"  class='back-button' onclick="window.history.back()">Повернутися назад</button>
         </form>
     </div>
     {% endif %}

@@ -71,8 +71,10 @@ class OrderCartItem(models.Model):
     order_cart = models.ForeignKey(OrderCart, related_name="items", on_delete=models.CASCADE)
     product = models.ForeignKey("Product", on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
+    price_at_purchase = models.DecimalField(max_digits=10, decimal_places=2,default=0)
 
-
+    def total(self):
+        return self.price_at_purchase * self.quantity
 
 class Order(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

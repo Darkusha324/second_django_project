@@ -94,6 +94,17 @@
             border-radius: 5px;
             color: #fff;
             font-weight: bold;
+            cursor: pointer;
+
+            background: #555;
+
+            border: none;
+            outline: none;
+            box-shadow: none;
+
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
         }
 
         .back-btn {
@@ -110,6 +121,19 @@
 
         .order-btn:hover {
             background: #023e8a;
+        }
+          .back-button {
+            background: #6c757d;
+            color: white;
+        }
+
+        .back-button:hover {
+            background: #5a6268;
+        }
+
+        .back-button:focus {
+            outline: none;
+            box-shadow: none;
         }
     </style>
 </head>
@@ -142,7 +166,7 @@
         </div>
 
         <div class="cart-footer">
-            <a href="{% url 'store:home' %}" class="back-btn">Повернутися до магазину</a>
+            <button type="button"  class="back-btn" onclick="window.history.back()">Повернутися назад</button>
             {%if items%}
             <a href="{% url 'store:add_order' %}" class="order-btn">Перейти до замовлення </a>
             {%endif%}

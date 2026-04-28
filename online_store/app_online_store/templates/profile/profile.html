@@ -117,6 +117,43 @@
         .cart-btn:hover {
             background: #023e8a;
         }
+       .btn, .btn-gray {
+            display: inline-block;
+            width: 180px;
+            text-align: center;
+            padding: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+       }
+         .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .btn {
+            background-color: #0077b6;
+            color: #fff;
+        }
+
+        .btn:hover {
+            background-color: #023e8a;
+        }
+
+        .btn-gray {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+        .btn-gray:hover {
+            background-color: #5a6268;
+        }
+
+
     </style>
 </head>
 <body>
@@ -136,10 +173,11 @@
                     <p><strong>Повне ім'я:</strong> {{ user.first_name }} {{ user.last_name }}</p>
                 {% endif %}
 
-                <div>
-                    <a href="{% url 'store:add_product' %}" class="btn">Додати товар</a>
-                    <a href="{% url 'store:logout_user' %}" class="btn">Вийти</a>
-                </div>
+                <div class="btn-group">
+                <a href="{% url 'store:add_product' %}" class="btn">Додати товар</a>
+                <a href="{% url 'store:logout_user' %}" class="btn">Вийти</a>
+                <a href="{% url 'store:home' %}" class="btn-gray">На головну</a>
+            </div>
             </div>
 
             <div class="products">
@@ -154,6 +192,14 @@
                                     <p>{{ product.price }} грн</p>
                                     <p>{{ product.description|truncatewords:12 }}</p>
                                 </div>
+
+                                <form action="{% url 'store:delete_product' product.id %}" method="post" style="margin-left:auto;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn">Видалити</button>
+                                </form>
+
+
+
                             </div>
                         </a>
                     {% endfor %}
@@ -162,7 +208,7 @@
                 {% endif %}
             </div>
 
-            <!-- Окрема секція для корзини -->
+
             <div class="cart-section">
                 <h2>Ваша корзина</h2>
                 {% if user.cart.items.all %}

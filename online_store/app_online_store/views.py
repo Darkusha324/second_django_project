@@ -154,3 +154,9 @@ def add_order (request):
         form = FormOrder()
     return render(request,'Addorder/Addorder.html',{'form':form,"cart_user":cart_user})
 
+
+def delete_product(request,id):
+    product = models.Product.objects.get(id=id)
+    product.delete()
+    return redirect('store:profile',username=request.user.username)
+
