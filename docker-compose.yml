@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+  django:
+    build: .
+    container_name: online_store_django
+
+    working_dir: /app/online_store
+
+    command: >
+      sh -c "
+      python manage.py makemigrations &&
+      python manage.py migrate &&
+      python manage.py runserver 0.0.0.0:8000
+      "
+
+    volumes:
+      - .:/app
+
+    ports:
+      - "8000:8000"
+
+    environment:
+      - DEBUG=1
